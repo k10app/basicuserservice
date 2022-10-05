@@ -28,7 +28,7 @@ var db = mariadb.createPool({
     port: process.env.MARIADB_PORT || '3306',
     user: process.env.MARIADB_USER || 'userdblogin', 
     password: process.env.MARIADB_PASSWORD || 'userdbpassword',
-    database: process.env.MARIADB_DATABASE || 'userdbpassword',
+    database: process.env.MARIADB_DATABASE || 'userdb',
     connectionLimit: 10
 });
 
