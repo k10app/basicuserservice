@@ -14,6 +14,7 @@ ENV MARIADB_DATABASE=userdb
 ENV MARIADB_USER=userdblogin
 ENV MARIADB_PASSWORD=userdbpassword
 ENV MARIADB_ROOT_PASSWORD=userdbrootpass
+ENV ROUTE_PREFIX=/user
 
 EXPOSE ${SERVER_PORT}
 CMD ["node","/basicuserservice/server.js"]
