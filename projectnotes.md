@@ -17,5 +17,5 @@ openssl rsa -in private.key -pubout -outform PEM -out public.pub
 
 # BUS
 ```
-docker run -v <dirtokey>:/basicuserservice/certificates/ -e MARIADB_HOST=<ip> --name bus -p 3000:80 --rm -it tdewin/bus
+docker run -v <dirtokey>:/basicuserservice/certificates/ -e MARIADB_HOST=<ip> --name bus -p 80:80 --rm -it ghcr.io/k10app/basicuserservice
 ```
