@@ -9,10 +9,13 @@ docker container stop userdb
 docker container rm -f userdb && docker volume prune -f  
 ```
 
-# jwt keys
+# jwt keys, you can use ubuntu on windows for example
 ```
-ssh-keygen -t rsa -b 4096 -m PEM -f jwtRS256.key
-openssl rsa -in jwtRS256.key -pubout -outform PEM -out jwtRS256.key.pub
-cat jwtRS256.key
-cat jwtRS256.key.pub
+openssl genrsa -out private.key 4096
+openssl rsa -in private.key -pubout -outform PEM -out public.pub
+```
+
+# BUS
+```
+docker run -v <dirtokey>:/basicuserservice/certificates/ -e MARIADB_HOST=<ip> --name bus -p 3000:80 --rm -it tdewin/bus
 ```

@@ -22,7 +22,7 @@ app.get("/", async (req, res) => {
             res.json({status:"ok",login:result.login,exp:result.exp})
         } catch (error) {
             console.log("verify error",error)
-            res.status(403).send("Verifiy error")
+            res.status(403).send("Verify error")
         }
     } else {
         res.status(403).send("No jwt")

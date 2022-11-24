@@ -1,10 +1,10 @@
 require('dotenv').config()
 
 /*
-POST /register {login,email,password} -> return JWT in {status:"ok",jwt:$jwt}
-POST /login {login,password} -> return JWT in {status:"ok",jwt:$jwt}
-GET /pubkey -> return pubkey of the server
-GET /users -> list all users
+POST /user/register {login,email,password} -> return JWT in {status:"ok",jwt:$jwt}
+POST /user/login {login,password} -> return JWT in {status:"ok",jwt:$jwt}
+GET /user/pubkey -> return pubkey of the server
+GET /user/users -> list all users
 */
 
 const fs = require('fs');
@@ -12,6 +12,8 @@ const express = require('express');
 const mariadb = require('mariadb');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
+
+
 var port = process.env.SERVER_PORT || 80;
 
 
@@ -22,6 +24,8 @@ var jwtLifeTime = process.env.JWT_TOKEN_LIFETIME
 console.log("lifetime ",jwtLifeTime)
 
 console.log(publicKey)
+
+var routePrefix = process.env.ROUTE_PREFIX || '/user' 
 
 var db = mariadb.createPool({
     host: process.env.MARIADB_HOST || 'localhost', 
@@ -41,7 +45,7 @@ function startServer() {
     app.get("/", async (req, res) => {
         res.status(404).send("unrecognized route")
     });
-    app.post("/register",  async (req, res) => {
+    app.post(routePrefix+"/register",  async (req, res) => {
         const { login, email, password } = req.body;
 
         if (!login || !email || !password ) {
@@ -75,10 +79,10 @@ function startServer() {
             }
         }  
     })
-    app.get("/pubkey", (req,res)=>{
+    app.get(routePrefix+"/pubkey", (req,res)=>{
         res.status(200).type("text/plain").send(publicKey)
     })
-    app.post("/login", async (req, res) => {
+    app.post(routePrefix+"/login", async (req, res) => {
         const { login, password } = req.body;
         if (!login || !password ) {
             console.log("invalid request ",req.body)
@@ -116,7 +120,7 @@ function startServer() {
         
     })
     
-    app.get("/users", async (req,res)=> {
+    app.get(routePrefix+"/users", async (req,res)=> {
         try {
             const conn = await db.getConnection()
             const query = await conn.query("select * from users");
@@ -125,6 +129,21 @@ function startServer() {
             throw err;
         }
     })
+
+    app.get(routePrefix+"/verify", async (req, res) => {
+        const token = req.headers.authorization.split(" ")
+        if (token.length > 1 && token[0] == "Bearer") {
+            try {
+                const result = jwt.verify(token[1],publicKey)
+                res.json({status:"ok",login:result.login,exp:result.exp})
+            } catch (error) {
+                console.log("verify error",error)
+                res.status(403).send("Verify error")
+            }
+        } else {
+            res.status(403).send("No jwt")
+        }
+    });
     
     app.listen(port, () => {
      console.log("Server running on port "+port);
