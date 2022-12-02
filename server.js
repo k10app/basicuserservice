@@ -156,8 +156,8 @@ function startServer() {
 //Removes any issue with setup
 const sqlCreateTable = `CREATE TABLE IF NOT EXISTS \`users\` (
 	\`id\` INT NOT NULL AUTO_INCREMENT UNIQUE,
-	\`login\` TEXT NOT NULL UNIQUE,
-	\`email\` TEXT NOT NULL UNIQUE,
+	\`login\` VARCHAR(128) NOT NULL UNIQUE,
+	\`email\` VARCHAR(256) NOT NULL UNIQUE,
 	\`passwordHash\` TEXT NOT NULL,
 	PRIMARY KEY (\`id\`)
 );`
