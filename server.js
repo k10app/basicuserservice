@@ -12,6 +12,7 @@ const express = require('express');
 const mariadb = require('mariadb');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
+const cors = require('cors');
 
 
 var port = process.env.SERVER_PORT || 80;
@@ -41,6 +42,8 @@ function startServer() {
     var app = express();
 
     app.use(express.json());
+    
+    app.use(cors());
 
     app.get("/", async (req, res) => {
         res.status(404).send("unrecognized route")
